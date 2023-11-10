@@ -22,10 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname'] = 'YuJa for Tiny';
-$string['yuja:notready'] = 'The YuJa media selector is still loading your YuJa content. Try again in a few seconds.';
-$string['yuja:phperror'] = 'The YuJa media selector experienced an error.  Please ensure your configuration information is correct and try refreshing the page. If the error persists, please contact YuJa support.';
-$string['yuja:loadingerror'] = 'The YuJa media selector experienced an error while loading videos.  Please ensure your configuration information is correct and try refreshing the page. If the error persists, please contact YuJa support.';
-$string['buttonTitle'] = 'YuJa Media Selector';
+$string['yuja:notready'] = 'The YuJa media chooser is still loading your YuJa content. Try again in a few seconds.';
+$string['yuja:phperror'] = 'The YuJa media chooser experienced an error.  Please ensure your configuration information is correct and try refreshing the page. If the error persists, please contact YuJa support.';
+$string['yuja:loadingerror'] = 'The YuJa media chooser experienced an error while loading videos.  Please ensure your configuration information is correct and try refreshing the page. If the error persists, please contact YuJa support.';
+$string['buttonTitle'] = 'YuJa Media Chooser';
 
 // Privacy API fields
 $string['privacy:metadata:lti_client'] = 'In order to integrate with a remote LTI service, user and course data needs to be exchanged with that service.';

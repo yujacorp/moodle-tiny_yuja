@@ -345,7 +345,7 @@ const handleAction = (editor) => {
     var params = JSON.parse(document.getElementById('urldata').value);
 
     if (params.error !== undefined && params.error !== null) {
-        showAlertMessage("Error", 'The YuJa media selector experienced an error.  Please ensure your configuration information is correct and try refreshing the page. If the error persists, please contact YuJa support.');
+        showAlertMessage("Error", 'The YuJa media chooser experienced an error.  Please ensure your configuration information is correct and try refreshing the page. If the error persists, please contact YuJa support.');
         return;
     }
 
@@ -377,7 +377,7 @@ const handleAction = (editor) => {
             isYujaConnected = false;
             // Call the mceYuja function
             if (params.videos !== undefined && params.videos.success === false) {
-                showAlertMessage("Loading...", 'The YuJa media selector experienced an error while loading videos.  Please ensure your configuration information is correct and try refreshing the page. If the error persists, please contact YuJa support.');
+                showAlertMessage("Loading...", 'The YuJa media chooser experienced an error while loading videos.  Please ensure your configuration information is correct and try refreshing the page. If the error persists, please contact YuJa support.');
                 return;
             }
 
@@ -386,7 +386,23 @@ const handleAction = (editor) => {
             }
 
             mediaSelector.onSelect(function (embedString) {
-                editor.execCommand('mceInsertContent', false, embedString);
+                var editorcontents = editor.getContent();
+                var arrayofIframe = editorcontents.split("<iframe");
+                var splitembedString = embedString.split(" ");
+                var currentURL = embedString.match(/https?:\/\/[^\s]+/)[0];
+                const urlParams = new URLSearchParams(currentURL);
+                const auth = urlParams.get('a');
+                var error = false;
+                //to avoid duplicate video with same height and width
+                arrayofIframe.forEach(function(item,index){
+                    if(item.includes(splitembedString[1].match(/\d/g).join("")) && item.includes(splitembedString[2].match(/\d/g).join("")) && item.includes(auth)){
+                     error = true;;
+                    }
+                    
+                    });
+                if(!error){
+                    editor.execCommand('mceInsertContent', false, embedString);
+                }
             });
 
             mediaSelector.open();
@@ -406,7 +422,7 @@ const handleAction = (editor) => {
         // Call this function again once complete
         //yujaConnectedCallback = this.execCommands['mceYuja'].func.bind(this, this, false);
     } else if (params.videos === undefined || (typeof yuja === "undefined" || yuja === undefined)) {
-        showAlertMessage("Loading...", 'The YuJa media selector is still loading your YuJa content. Try again in a few seconds.');
+        showAlertMessage("Loading...", 'The YuJa media chooser is still loading your YuJa content. Try again in a few seconds.');
         return;
     }
 

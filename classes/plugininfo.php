@@ -50,13 +50,16 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
 
     public static function get_yuja_client(){
         $params = array (
-            "yujaVideosUrl",
-            "yujaJsUrl",
-            "yujaError"
+            "yujaVideosUrl" => null,
+            "yujaJsUrl" => null,
+            "yujaError" => null,
+            'lti3LoginInitUrl' => null,
+            'ltiVersion' => null
         );
         $yujaclient = new \yuja_client();
-        $params = $params + $yujaclient->get_texteditor_params();
-        $jsonstring = json_encode(array('yujaVideosUrl'=>$params['yujaVideosUrl'], 'yujaJsUrl'=> $params['yujaJsUrl'], 'yujaError' => $params['yujaError']));
+        $params = $yujaclient->get_texteditor_params('tiny') + $params;
+
+        $jsonstring = json_encode($params);
         echo \html_writer::tag('input', '', array('id' => 'urldata', 'type' => 'hidden', 'value' => $jsonstring));
         return $params;
     }

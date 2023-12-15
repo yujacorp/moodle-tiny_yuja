@@ -15,8 +15,7 @@
 
 /**
  * YuJa Plugin for Moodle Tiny
- * @package    tiny_yuja/options
- * @subpackage yuja
+ * @module     tiny_yuja/options
  * @copyright  2023 YuJa
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

@@ -15,9 +15,7 @@
 
 /**
  * YuJa Plugin for Moodle Tiny
- * @package    tiny_yuja/commands
  * @module     tiny_yuja/commands
- * @subpackage yuja
  * @copyright  2023 YuJa
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,6 +30,7 @@
       * @param {string} url Absolute URL to where the plugin is located.
       */
 
+var handlerLoaded = false;
 
 function loadScript(url) {
     var script = document.createElement('script');
@@ -39,7 +38,61 @@ function loadScript(url) {
     (document.body || document.head || document.documentElement).appendChild(script);
 }
 
+function embedHandler(editor, embedString) {
+    var editorcontents = editor.getContent();
+    var arrayofIframe = editorcontents.split("<iframe");
+    var splitembedString = embedString.split(" ");
+    var currentURL = embedString.match(/https?:\/\/[^\s]+/)[0];
+    const urlParams = new URLSearchParams(currentURL);
+    const auth = urlParams.get('a');
+    var error = false;
+    //to avoid duplicate video with same height and width
+    arrayofIframe.forEach(function(item,index){
+        if(item.includes(splitembedString[1].match(/\d/g).join("")) && item.includes(splitembedString[2].match(/\d/g).join("")) && item.includes(auth)){
+         error = true;;
+        }
+        
+        });
+    if(!error){
+        editor.execCommand('mceInsertContent', false, embedString);
+    }
+}
 
+function loadIframe(url, editor) {
+    var script = document.createElement('script');
+    script.onload = function () {
+        require(['jquery'], function($) {
+            $("#yujaVideoChooserIFrame").attr('src',url);
+            
+            if (!handlerLoaded) {
+                if (window.addEventListener) {  // all browsers except IE before version 9
+                    window.addEventListener ("message", OnMessage, false);
+                } else {
+                    if (window.attachEvent) {   // IE before version 9
+                        window.attachEvent("onmessage", OnMessage);
+                    }
+                }
+                
+                function OnMessage(event) {
+                    if(event.data.type == "getVideo") {
+        
+                        var embedString = event.data.embed;
+                        embedHandler(editor, embedString);
+                        
+                        require(['jquery'], function($) {
+                            $(".yuja-overlay").removeClass('yuja-overlay-visible');
+                            $("#yujaVideoChooserIFrame").attr('src',"");
+                        });
+                    }
+                }
+
+                handlerLoaded = true;
+            }
+        });
+    };
+    script.src = location.origin + "/local/yuja/media_selection.js";
+    (document.body || document.head || document.documentElement).appendChild(script);
+}
 
 function showAlertMessage(title, message) {
     // ---------constants and definitions----------
@@ -338,13 +391,18 @@ const handleAction = (editor) => {
      * This call is done before the editor instance has finished it's initialization so use the onInit event
      * of the editor instance to intercept that event.
      *
-     * @param {tiny.Editor} ed Editor instance that the plugin is initialized in.
+     * @param {tiny.Editor} editor Editor instance that the plugin is initialized in.
      * @param {string} url Absolute URL to where the plugin is located.
      */
     var mediaSelector = null;
     var params = JSON.parse(document.getElementById('urldata').value);
 
-    if (params.error !== undefined && params.error !== null) {
+    if (params.ltiVersion == "1.3") {
+        loadIframe(params.lti3LoginInitUrl, editor);
+        return;
+    }
+
+    if (params.yujaError !== undefined && params.yujaError !== null) {
         showAlertMessage("Error", 'The YuJa media chooser experienced an error.  Please ensure your configuration information is correct and try refreshing the page. If the error persists, please contact YuJa support.');
         return;
     }
@@ -385,25 +443,7 @@ const handleAction = (editor) => {
                 mediaSelector = yuja.createMediaSelector(params.videos.data);
             }
 
-            mediaSelector.onSelect(function (embedString) {
-                var editorcontents = editor.getContent();
-                var arrayofIframe = editorcontents.split("<iframe");
-                var splitembedString = embedString.split(" ");
-                var currentURL = embedString.match(/https?:\/\/[^\s]+/)[0];
-                const urlParams = new URLSearchParams(currentURL);
-                const auth = urlParams.get('a');
-                var error = false;
-                //to avoid duplicate video with same height and width
-                arrayofIframe.forEach(function(item,index){
-                    if(item.includes(splitembedString[1].match(/\d/g).join("")) && item.includes(splitembedString[2].match(/\d/g).join("")) && item.includes(auth)){
-                     error = true;;
-                    }
-                    
-                    });
-                if(!error){
-                    editor.execCommand('mceInsertContent', false, embedString);
-                }
-            });
+            mediaSelector.onSelect(embedHandler.bind(null, editor));
 
             mediaSelector.open();
         }

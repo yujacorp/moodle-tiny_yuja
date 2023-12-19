@@ -25,7 +25,7 @@
 
 namespace tiny_yuja;
 global $CFG;
-require_once($_SERVER['DOCUMENT_ROOT']. '/local/yuja/classes/local_yuja/yuja_client.class.php');
+require_once($CFG->dirroot . '/local/yuja/classes/local_yuja/yuja_client.class.php');
 
 use context;
 use editor_tiny\plugin;

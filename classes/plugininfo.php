@@ -59,8 +59,6 @@ class plugininfo extends plugin implements plugin_with_configuration, plugin_wit
         $yujaclient = new \yuja_client();
         $params = $yujaclient->get_texteditor_params('tiny') + $params;
 
-        $jsonstring = json_encode($params);
-        echo \html_writer::tag('input', '', array('id' => 'urldata', 'type' => 'hidden', 'value' => $jsonstring));
         return $params;
     }
 

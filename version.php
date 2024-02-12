@@ -24,8 +24,8 @@
 
  defined('MOODLE_INTERNAL') || die('Must access from moodle');
 
-$plugin->version = 2023121400;
-$plugin->release = '2.0';
+$plugin->version = 2024021200;
+$plugin->release = '2.1';
 $plugin->requires  = 2012120300;
 $plugin->component = 'tiny_yuja';
 $plugin->dependencies = array(

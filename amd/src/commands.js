@@ -20,15 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-/**
-      * Initializes the plugin, this will be executed after the plugin has been created.
-      * This call is done before the editor instance has finished it's initialization so use the onInit event
-      * of the editor instance to intercept that event.
-      *
-      * @param {tiny.Editor} ed Editor instance that the plugin is initialized in.
-      * @param {string} url Absolute URL to where the plugin is located.
-      */
+import {getParamUrls} from './options';
 
 var handlerLoaded = false;
 
@@ -395,7 +387,7 @@ const handleAction = (editor) => {
      * @param {string} url Absolute URL to where the plugin is located.
      */
     var mediaSelector = null;
-    var params = JSON.parse(document.getElementById('urldata').value);
+    var params = getParamUrls(editor);
 
     if (params.ltiVersion == "1.3") {
         loadIframe(params.lti3LoginInitUrl, editor);

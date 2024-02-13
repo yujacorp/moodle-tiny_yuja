@@ -23,9 +23,7 @@
 import {getPluginOptionName} from 'editor_tiny/options';
 import {pluginName} from './common';
 
-
-const contextIdName = getPluginOptionName(pluginName, 'contextid');
-const fpoptions = getPluginOptionName(pluginName,'paramUrls');
+const paramUrlsName = getPluginOptionName(pluginName,'paramUrls');
 
 /**
  * Options registration function.
@@ -37,19 +35,15 @@ export const register = (editor) => {
 
     // For each option, register it with the editor.
     // Valid type are defined in https://www.tiny.cloud/docs/tinymce/6/apis/tinymce.editoroptions/
-    registerOption(contextIdName, {
-        processor: 'number',
-    });
-    registerOption(fpoptions, {
-        processor: 'array',
+    registerOption(paramUrlsName, {
+        processor: 'object',
     });
 };
 
 /**
- * Fetch the contextId value for this editor instance.
+ * Fetch the paramUrls value for this editor instance.
  *
  * @param {tinyMCE} editor The editor instance to fetch the value for
- * @returns {object} The value of the myFirstProperty option
+ * @returns {object} The value of the paramUrls option
  */
-export const getContextId = (editor) => editor.options.get(contextIdName);
-export const getFpoptions = (editor) => editor.options.get(fpoptions);
+export const getParamUrls = (editor) => editor.options.get(paramUrlsName);
